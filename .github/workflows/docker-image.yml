@@ -1,4 +1,4 @@
-name: jpa shop Image Build
+name: llm-backend Image Build
 on:
   workflow_dispatch:
     inputs:
@@ -80,7 +80,7 @@ jobs:
         run: |
           ./gradlew clean build \
           --exclude-task test \
-          :llm-backend:bootBuildImage \
+          bootBuildImage \
           --imageName=devyoongu/llm-backend:${{ needs.analyze-tags.outputs.previous-tag }}-${{ steps.vars.outputs.sha_short }}
 
       - name: Docker Login
