@@ -38,15 +38,14 @@ jobs:
       - name: setup-build-param
         id: setup-build-param
         run: |
-          echo ::set-output name=image::robi-t-backend
-          echo ::set-output name=client::robi-ipcc-rpm-app
+          echo ::set-output name=image::llm-backend
 
           if [ ${{ needs.analyze-tags.outputs.branch }} == production ]; then
-              echo ::set-output name=image::robi-t-backend-prod
+              echo ::set-output name=image::llm-backend-prod
           elif [ ${{ needs.analyze-tags.outputs.branch }} == staging ]; then
-              echo ::set-output name=image::robi-t-backend-staging
+              echo ::set-output name=image::llm-backend-staging
           else
-              echo ::set-output name=image::robi-t-backend-dev
+              echo ::set-output name=image::llm-backend-dev
           fi
     outputs:
       image: ${{ steps.setup-build-param.outputs.image }}
@@ -76,9 +75,13 @@ jobs:
 
       - name: Build with Gradle
         env:
-          USER_NAME: ${{ secrets.JIHONG_USER_NAME }}
-          ACCESS_TOKEN: ${{ secrets.JIHONG_SECRET_TOKEN }}
-        run: ./gradlew build --exclude-task test :robi-ipcc-rpm-app:bootBuildImage --imageName=posicube/${{ needs.setup-build-param.outputs.image }}:${{ needs.analyze-tags.outputs.previous-tag }}-${{ steps.vars.outputs.sha_short }}
+          USER_NAME: ${{ secrets.YG_USER_NAME }}
+          ACCESS_TOKEN: ${{ secrets.YG_SECRET_TOKEN }}
+        run: |
+          ./gradlew clean build \
+          --exclude-task test \
+          :llm-backend:bootBuildImage \
+          --imageName=devyoongu/llm-backend:${{ needs.analyze-tags.outputs.previous-tag }}-${{ steps.vars.outputs.sha_short }}
 
       - name: Docker Login
         uses: docker/login-action@v1.8.0
@@ -93,8 +96,8 @@ jobs:
 
       - name: Publish Docker image
         run: |
-          docker tag posicube/${{ needs.setup-build-param.outputs.image }}:${{ needs.analyze-tags.outputs.previous-tag }}-${{ steps.vars.outputs.sha_short }} posicube/${{ needs.setup-build-param.outputs.image }}:latest
-          docker push posicube/${{ needs.setup-build-param.outputs.image }}:${{ needs.analyze-tags.outputs.previous-tag }}-${{ steps.vars.outputs.sha_short }}
-          docker push posicube/${{ needs.setup-build-param.outputs.image }}:latest
+          docker tag devyoongu/${{ needs.setup-build-param.outputs.image }}:${{ needs.analyze-tags.outputs.previous-tag }}-${{ steps.vars.outputs.sha_short }} devyoongu/${{ needs.setup-build-param.outputs.image }}:latest
+          docker push devyoongu/${{ needs.setup-build-param.outputs.image }}:${{ needs.analyze-tags.outputs.previous-tag }}-${{ steps.vars.outputs.sha_short }}
+          docker push devyoongu/${{ needs.setup-build-param.outputs.image }}:latest
     outputs:
       sha_short: ${{ steps.vars.outputs.sha_short }}
