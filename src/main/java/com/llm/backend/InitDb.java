@@ -6,7 +6,6 @@ import com.llm.backend.domain.Member;
 import com.llm.backend.domain.Order;
 import com.llm.backend.domain.OrderItem;
 import com.llm.backend.domain.item.Book;
-import jpabook.jpashop.domain.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

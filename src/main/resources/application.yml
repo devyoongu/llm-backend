@@ -1,0 +1,31 @@
+#server:
+#  port: 80801
+#  shutdown: graceful
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/test?useUnicode=yes&characterEncoding=UTF-8&useSSL=true&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul
+    username: root
+    password: password
+    hikari:
+      leak-detection-threshold: 1000
+#  datasource:
+#    url: jdbc:h2:tcp://localhost/~/jpashop
+#    username: sa
+#    password:
+#    driver-class-name: org.h2.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+#        show_sql: true
+#        default_batch_fetch_size: 100 #in 절을 사용하겠다는 설정이며 in 절에 들어갈 갯수 설정
+
+logging.level:
+  org.hibernate.SQL: debug
+  org.hibernate.type: trace
+
