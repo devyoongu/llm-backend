@@ -48,6 +48,7 @@ public class ChatLog extends BaseTimeEntity {
             .id(UUID.randomUUID().toString())
             .role(chatLogDto.getRole())
             .content(chatLogDto.getContent())
+            .createdTime(chatLogDto.getCreatedTime())
             .build();
     }
 }

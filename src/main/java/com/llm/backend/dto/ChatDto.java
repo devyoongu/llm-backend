@@ -17,6 +17,7 @@ public class ChatDto {
     public static class ChatLogDto {
         private String role;
         private String content;
+        private long createdTime;
     }
 
 }
