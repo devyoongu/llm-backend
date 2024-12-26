@@ -59,7 +59,7 @@ dependencies {
 
 	implementation 'org.apache.commons:commons-lang3:3.13.0' // 최신 버전 기준 (2024년)
 
-	implementation 'com.yoongu.security:yoongu-security:1.0.0'
+//	implementation 'com.yoongu.security:yoongu-security:1.0.0'
 }
 
 tasks.named('test') {
