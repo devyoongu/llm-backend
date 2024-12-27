@@ -1,14 +1,18 @@
 package com.llm.backend.domain;
 
 import com.llm.backend.dto.ContactDto.ContactSaveRequest;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Lob;
+import javax.persistence.OneToMany;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 @SuperBuilder
@@ -18,9 +22,8 @@ import lombok.experimental.SuperBuilder;
 public class Contact extends BaseTimeEntity{
 
     @Id
-    @GeneratedValue
     @Column(name = "contact_id")
-    private Long id;
+    private String id;
 
     private String name;
 
@@ -28,17 +31,34 @@ public class Contact extends BaseTimeEntity{
 
     private String question;
 
-    @Column
-    @Lob
-    private String chatData;
+    private String region;
 
+    @OneToMany(mappedBy = "contact", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude // Lombok 순환 참조 방지
+    private List<Dialogue> dialogues;
+
+    public void addDialogue(Dialogue dialogue) {
+        dialogue.setContact(this);
+        if (this.dialogues == null) {
+            this.dialogues = new ArrayList<>();
+        }
+        this.dialogues.add(dialogue);
+    }
 
     public static Contact toEntity(ContactSaveRequest request) {
-        return Contact.builder()
+        // Contact를 생성하면서 Dialogue와의 관계를 설정
+        Contact contact = Contact.builder()
+            .id(UUID.randomUUID().toString())
             .name(request.getName())
             .phoneNumber(request.getPhoneNumber())
             .question(request.getQuestion())
+            .region(request.getRegion())
+            .dialogues(new ArrayList<>())
             .build();
+
+        request.getDialogues().forEach(dto -> contact.addDialogue(Dialogue.toEntity(dto)));
+
+        return contact;
     }
 
 }

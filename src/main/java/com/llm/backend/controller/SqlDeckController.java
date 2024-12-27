@@ -20,7 +20,7 @@ public class SqlDeckController {
 
     private final SqlDeckService sqlDeckService;
 
-    @PostMapping("/sqldeck/execute")
+    @PostMapping("/api/sqldeck/execute")
     public ResponseEntity<CommonResponse> executeSqlDeck(@RequestBody SqlDeckRequest sqlQuery) {
         try {
             List<Map<String, Object>> result = sqlDeckService.executeNativeQuery(sqlQuery.getSqlQuery());

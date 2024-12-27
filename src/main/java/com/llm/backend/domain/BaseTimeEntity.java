@@ -17,10 +17,13 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public abstract class BaseTimeEntity {
 
     @CreatedDate
-    @Column(updatable = false)
+    @Column(name = "created_date", updatable = false, nullable = false,
+        columnDefinition = "DATETIME(6) DEFAULT CURRENT_TIMESTAMP(6)")
     private LocalDateTime createdDate;
 
     @LastModifiedDate
+    @Column(name = "modified_date", nullable = false,
+        columnDefinition = "DATETIME(6) DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6)")
     private LocalDateTime modifiedDate;
 
     public LocalDateTime getCreatedDate() {
@@ -32,4 +35,5 @@ public abstract class BaseTimeEntity {
     }
 
 }
+
 
