@@ -1,29 +1,32 @@
 package com.llm.backend.controller;
 
-import com.llm.backend.domain.ChatThread;
-import com.llm.backend.dto.ChatDto.ChatSaveRequest;
-import com.llm.backend.dto.CommonResponse;
+import com.llm.backend.dto.ChatDto.ChatThreadResponseDto;
 import com.llm.backend.service.ChatService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @Slf4j
-@RestController
+@Controller
 @RequiredArgsConstructor
 public class ChatController {
 
     private final ChatService chatService;
 
-    @PostMapping("/api/chat-log")
-    public ResponseEntity<CommonResponse> saveChatLog(@RequestBody ChatSaveRequest request) {
+    @GetMapping("/chat-log")
+    public String saveChatLog(@PageableDefault(size = 10, sort = "createdDate",direction = Sort.Direction.DESC) Pageable pageable, Model model) {
 
-        ChatThread saved = chatService.saveChatLog(request);
+        List<ChatThreadResponseDto> chatLogs = chatService.searchChatLog(pageable);
 
-        return ResponseEntity.ok(CommonResponse.ok(saved));
+        model.addAttribute("chatLogs", chatLogs);
+
+        return "chatLog";
     }
 
 }
