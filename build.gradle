@@ -51,15 +51,22 @@ dependencies {
 		exclude group: "org.hamcrest", module: "hamcrest-core"
 	}
 
-	//querydsl 추가
-	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
-	implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
-
 	implementation 'mysql:mysql-connector-java'
 
 	implementation 'org.apache.commons:commons-lang3:3.13.0' // 최신 버전 기준 (2024년)
 
 //	implementation 'com.yoongu.security:yoongu-security:1.0.0'
+
+	//querydsl 추가
+	implementation 'com.querydsl:querydsl-core'
+	implementation 'com.querydsl:querydsl-jpa'
+	annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
+	annotationProcessor "jakarta.persistence:jakarta.persistence-api" // java.lang.NoClassDefFoundError(javax.annotation.Entity) 발생 대응
+	annotationProcessor "jakarta.annotation:jakarta.annotation-api" // java.lang.NoClassDefFoundError (javax.annotation.Generated) 발생 대응
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+	testImplementation "com.querydsl:querydsl-jpa"
+	testAnnotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}:jpa"
+
 }
 
 tasks.named('test') {
