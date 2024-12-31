@@ -19,14 +19,14 @@ public class ChatController {
 
     private final ChatService chatService;
 
-    @GetMapping("/chat-log")
-    public String saveChatLog(@PageableDefault(size = 10, sort = "createdDate",direction = Sort.Direction.DESC) Pageable pageable, Model model) {
+    @GetMapping("/chat-thread")
+    public String searchChatLog(@PageableDefault(size = 10, sort = "createdDate",direction = Sort.Direction.DESC) Pageable pageable, Model model) {
 
-        List<ChatThreadResponseDto> chatLogs = chatService.searchChatLog(pageable);
+        List<ChatThreadResponseDto> chatThreads = chatService.searchChatLog(pageable);
 
-        model.addAttribute("chatLogs", chatLogs);
+        model.addAttribute("chatThreads", chatThreads);
 
-        return "chatLog";
+        return "chatThread";
     }
 
 }

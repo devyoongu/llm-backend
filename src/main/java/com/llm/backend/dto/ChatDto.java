@@ -39,6 +39,7 @@ public class ChatDto {
         private String chatThreadId;
         private Long userChatLogCount;
         private List<ChatLogDto> chatLogs;
+        private String chatLogsJson; // JSON 문자열 추가
     }
 
 
