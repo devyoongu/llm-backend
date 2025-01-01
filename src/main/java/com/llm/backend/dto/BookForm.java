@@ -1,4 +1,4 @@
-package com.llm.backend.controller;
+package com.llm.backend.dto;
 
 import lombok.Getter;
 import lombok.Setter;

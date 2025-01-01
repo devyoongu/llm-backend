@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header">
+    <title>Hello</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body class="sb-nav-fixed">
+<div th:replace="fragments/bodyHeader :: bodyHeader"></div>
+<div id="layoutSidenav">
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <h1 class="mt-4">대화 이력</h1>
+                <ol class="breadcrumb mb-4">
+<!--                    <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>-->
+<!--                    <li class="breadcrumb-item active">Tables</li>-->
+                </ol>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        DataTables is a third party plugin that is used to generate the demo table below. For more information about DataTables, please visit the
+                        <a target="_blank" href="https://datatables.net/">official DataTables documentation</a>.
+                    </div>
+                </div>
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-table me-1"></i>
+<!--                        DataTable Example-->
+                    </div>
+                    <div class="card-body">
+                        <!-- Table to display ChatLog data -->
+                        <table id="datatablesSimple" class="table table-bordered">
+                            <colgroup>
+                                <col span="1" style="width: 25%;">
+                                <col span="1" style="width: 20%;">
+                                <col span="1">
+                                <col span="1" style="width: 10%;">
+                                <col span="1" style="width: 15%;">
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th>채팅 ID</th>
+                                <th>채팅일시</th>
+                                <th>첫질문</th>
+                                <th>대화이력</th>
+                                <th>문의요청</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="chatThread : ${chatThreads}">
+                                <td th:text="${chatThread.chatThreadId}"></td>
+                                <td th:text="${#temporals.format(chatThread.createdDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                                <td th:text="${chatThread.firstChatLog}"></td>
+                                <td style="text-align: center">
+                                    <button type="button" class="btn btn-primary"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#chatLogsModal"
+                                            th:attr="data-chat-thread-id=${chatThread.chatThreadId}, data-chat-logs=${chatThread.chatLogsJson}">
+                                        <span th:text="${chatThread.userChatLogCount}"></span>
+                                    </button>
+                                </td>
+                                <td>
+                                    <a href="#" class="text-primary"
+                                       th:if="${chatThread.contact != null}"
+                                       th:attr="data-contact-id=${chatThread.contact.contactId}, data-contact-name=${chatThread.contact.name}, data-contact-phone=${chatThread.contact.phoneNumber}, data-contact-question=${chatThread.contact.question}"
+                                       data-bs-toggle="modal"
+                                       data-bs-target="#contactModal">
+                                        <i class="fa-solid fa-phone-volume"></i>
+                                    </a>
+                                    <span th:if="${chatThread.contact == null}">
+                                        <i class="fa-solid fa-phone"></i>
+<!--                                        <i class="fa-solid fa-phone-slash"></i>-->
+                                    </span>
+                                </td>
+                            </tr>
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <div th:replace="fragments/footer :: footer"></div>
+    </div>
+</div>
+<!-- Chat history Modal -->
+<div class="modal fade" id="chatLogsModal" tabindex="-1" aria-labelledby="chatLogsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="chatLogsModalLabel">Chat Logs</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="chatLogsContainer" class="chat-container">
+                    <!-- 메시지가 여기에 동적으로 추가됩니다 -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Contact Modal -->
+<div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="contactModalLabel">Contact Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Name:</strong> <span id="contactName"></span></p>
+                <p><strong>Phone Number:</strong> <span id="contactPhone"></span></p>
+                <p><strong>Question:</strong> <span id="contactQuestion"></span></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
