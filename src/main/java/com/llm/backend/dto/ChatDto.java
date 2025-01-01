@@ -41,6 +41,7 @@ public class ChatDto {
         private Long userChatLogCount;
         private List<ChatLogDto> chatLogs;
         private ContactResponse contact;
+        private String firstChatLog;
         private String chatLogsJson; // JSON 문자열 추가
     }
 

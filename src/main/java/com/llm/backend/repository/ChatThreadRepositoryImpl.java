@@ -70,6 +70,10 @@ public class ChatThreadRepositoryImpl implements  ChatThreadRepositoryCustom{
                 .fetch();
 
             dto.setChatLogs(chatLogs); // 결과에 chatLogs 설정
+
+            if (!chatLogs.isEmpty()) {
+                dto.setFirstChatLog(chatLogs.get(0).getContent());
+            }
         });
 
         // 전체 데이터 수
