@@ -11,7 +11,7 @@ public class ContactDto {
         public String name;
         public String phoneNumber;
         public String question;
-        public String chatThreadId;
+        public Long chatThreadId;
     }
 
 
@@ -26,7 +26,7 @@ public class ContactDto {
         public String name;
         public String phoneNumber;
         public String question;
-        public String chatThreadId;
+        public Long chatThreadId;
         public String contactId;
     }
 

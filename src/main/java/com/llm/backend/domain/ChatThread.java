@@ -4,11 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.llm.backend.dto.ChatDto.ChatSaveRequest;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -25,8 +26,9 @@ import lombok.experimental.SuperBuilder;
 public class ChatThread extends BaseTimeEntity{
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // 자동 증가 설정
     @Column(name = "chat_thread_id")
-    private String id;
+    private Long id;
 
     private String name;
 
@@ -49,7 +51,6 @@ public class ChatThread extends BaseTimeEntity{
 
     public static ChatThread toEntity(ChatSaveRequest request) {
         ChatThread chatThread = ChatThread.builder()
-            .id(UUID.randomUUID().toString())
             .name(request.getChatThreadName())
             .chatLogs(new ArrayList<>())
             .build();

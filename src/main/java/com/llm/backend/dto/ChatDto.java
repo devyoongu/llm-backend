@@ -14,9 +14,9 @@ public class ChatDto {
 
     @Data
     public static class ChatSaveRequest {
-        public String chatThreadId;
+        public Long chatThreadId;
         public String chatThreadName;
-        public List<ChatLogDto> chatLogs; // 변경
+        public List<ChatLogDto> chatLogs;
     }
 
     @Data
@@ -37,12 +37,12 @@ public class ChatDto {
     @Getter
     public static class ChatThreadResponseDto {
         private LocalDateTime createdDate;
-        private String chatThreadId;
+        private Long chatThreadId;
         private Long userChatLogCount;
         private List<ChatLogDto> chatLogs;
         private ContactResponse contact;
         private String firstChatLog;
-        private String chatLogsJson; // JSON 문자열 추가
+        private String chatLogsJson; // JSON 문자열 추가 for thymeleaf
     }
 
 

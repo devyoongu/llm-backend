@@ -31,7 +31,7 @@
                         <!-- Table to display ChatLog data -->
                         <table id="datatablesSimple" class="table table-bordered">
                             <colgroup>
-                                <col span="1" style="width: 20%;">
+                                <col span="1" style="width: 25%;">
                                 <col span="1" style="width: 20%;">
                                 <col span="1">
                                 <col span="1" style="width: 10%;">
@@ -39,11 +39,11 @@
                             </colgroup>
                             <thead>
                             <tr>
-                                <th>Chat Thread ID</th>
-                                <th>Created Time</th>
-                                <th>firstChatLog</th>
-                                <th>User Chat Log Count</th>
-                                <th>Contact</th>
+                                <th>채팅 ID</th>
+                                <th>채팅일시</th>
+                                <th>첫질문</th>
+                                <th>대화이력</th>
+                                <th>문의요청</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -65,9 +65,12 @@
                                        th:attr="data-contact-id=${chatThread.contact.contactId}, data-contact-name=${chatThread.contact.name}, data-contact-phone=${chatThread.contact.phoneNumber}, data-contact-question=${chatThread.contact.question}"
                                        data-bs-toggle="modal"
                                        data-bs-target="#contactModal">
-                                        View Contact
+                                        <i class="fa-solid fa-phone-volume"></i>
                                     </a>
-                                    <span th:if="${chatThread.contact == null}">No Contact</span>
+                                    <span th:if="${chatThread.contact == null}">
+                                        <i class="fa-solid fa-phone"></i>
+<!--                                        <i class="fa-solid fa-phone-slash"></i>-->
+                                    </span>
                                 </td>
                             </tr>
                             </tbody>
