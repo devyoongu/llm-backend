@@ -28,4 +28,19 @@ document.addEventListener('DOMContentLoaded', function () {
             chatLogsContainer.appendChild(messageDiv);
         });
     });
+
+    const contactModal = document.getElementById('contactModal');
+
+
+    contactModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget; // 클릭한 링크
+        const contactName = button.getAttribute('data-contact-name');
+        const contactPhone = button.getAttribute('data-contact-phone');
+        const contactQuestion = button.getAttribute('data-contact-question');
+
+        // 모달 내용 업데이트
+        document.getElementById('contactName').textContent = contactName || 'N/A';
+        document.getElementById('contactPhone').textContent = contactPhone || 'N/A';
+        document.getElementById('contactQuestion').textContent = contactQuestion || 'N/A';
+    });
 });

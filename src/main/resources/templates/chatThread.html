@@ -35,6 +35,7 @@
                                 <th>Chat Thread ID</th>
                                 <th>Created Time</th>
                                 <th>User Chat Log Count</th>
+                                <th>Contact</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -49,6 +50,16 @@
                                         <span th:text="${chatThread.userChatLogCount}"></span>
                                     </button>
                                 </td>
+                                <td>
+                                    <a href="#" class="text-primary"
+                                       th:if="${chatThread.contact != null}"
+                                       th:attr="data-contact-id=${chatThread.contact.contactId}, data-contact-name=${chatThread.contact.name}, data-contact-phone=${chatThread.contact.phoneNumber}, data-contact-question=${chatThread.contact.question}"
+                                       data-bs-toggle="modal"
+                                       data-bs-target="#contactModal">
+                                        View Contact
+                                    </a>
+                                    <span th:if="${chatThread.contact == null}">No Contact</span>
+                                </td>
                             </tr>
                             </tbody>
 
@@ -60,7 +71,7 @@
         <div th:replace="fragments/footer :: footer"></div>
     </div>
 </div>
-<!-- Modal -->
+<!-- Chat history Modal -->
 <div class="modal fade" id="chatLogsModal" tabindex="-1" aria-labelledby="chatLogsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -79,5 +90,26 @@
         </div>
     </div>
 </div>
+
+<!-- Contact Modal -->
+<div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="contactModalLabel">Contact Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Name:</strong> <span id="contactName"></span></p>
+                <p><strong>Phone Number:</strong> <span id="contactPhone"></span></p>
+                <p><strong>Question:</strong> <span id="contactQuestion"></span></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
