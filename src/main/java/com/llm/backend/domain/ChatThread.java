@@ -1,5 +1,6 @@
 package com.llm.backend.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.llm.backend.dto.ChatDto.ChatSaveRequest;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,8 +8,10 @@ import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -31,7 +34,12 @@ public class ChatThread extends BaseTimeEntity{
     @ToString.Exclude // Lombok 순환 참조 방지
     private List<ChatLog> chatLogs;
 
-    public void addDialogue(ChatLog chatLog) {
+    @OneToOne(mappedBy = "chatThread", fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @JsonIgnore
+    private Contact contact;
+
+    public void addChatLog(ChatLog chatLog) {
         chatLog.setChatThread(this);
         if (this.chatLogs == null) {
             this.chatLogs = new ArrayList<>();
@@ -46,7 +54,7 @@ public class ChatThread extends BaseTimeEntity{
             .chatLogs(new ArrayList<>())
             .build();
 
-        request.getChatLogs().forEach(dto -> chatThread.addDialogue(ChatLog.toEntity(dto)));
+        request.getChatLogs().forEach(dto -> chatThread.addChatLog(ChatLog.toEntity(dto)));
 
         return chatThread;
     }

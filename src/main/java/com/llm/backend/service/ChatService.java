@@ -53,14 +53,6 @@ public class ChatService {
         }
     }
 
-    /*public List<ChatThreadResponseDto> searchChatLog(Pageable pageable) {
-        Page<ChatThreadResponseDto> byCondition = chatThreadRepository.findByCondition(pageable);
-
-        List<ChatThreadResponseDto> content = byCondition.getContent();
-
-        return content;
-    }*/
-
     public List<ChatThreadResponseDto> searchChatLog(Pageable pageable) {
         Page<ChatThreadResponseDto> byCondition = chatThreadRepository.findByCondition(pageable);
         List<ChatThreadResponseDto> content = byCondition.getContent();

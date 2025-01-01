@@ -1,5 +1,6 @@
 package com.llm.backend.dto;
 
+import com.llm.backend.dto.ContactDto.ContactResponse;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -39,6 +40,7 @@ public class ChatDto {
         private String chatThreadId;
         private Long userChatLogCount;
         private List<ChatLogDto> chatLogs;
+        private ContactResponse contact;
         private String chatLogsJson; // JSON 문자열 추가
     }
 
