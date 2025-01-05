@@ -1,18 +1,15 @@
 package com.llm.backend.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.llm.backend.dto.ChatDto.ChatSaveRequest;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -35,11 +32,6 @@ public class ChatThread extends BaseTimeEntity{
     @OneToMany(mappedBy = "chatThread", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude // Lombok 순환 참조 방지
     private List<ChatLog> chatLogs;
-
-    @OneToOne(mappedBy = "chatThread", fetch = FetchType.LAZY)
-    @ToString.Exclude
-    @JsonIgnore
-    private Contact contact;
 
     public void addChatLog(ChatLog chatLog) {
         chatLog.setChatThread(this);

@@ -2,10 +2,11 @@ package com.llm.backend.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.llm.backend.dto.ContactDto.ContactSaveRequest;
-import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -22,8 +23,9 @@ import lombok.experimental.SuperBuilder;
 public class Contact extends BaseTimeEntity{
 
     @Id
-    @Column(name = "contact_id")
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // 자동 증가 ID 설정
+    @Column(name = "contact_id", nullable = false)
+    private Long id;
 
     private String name;
 
@@ -37,11 +39,10 @@ public class Contact extends BaseTimeEntity{
     @JoinColumn(name = "chat_thread_id")
     @ToString.Exclude
     @JsonIgnore
-    private ChatThread chatThread;
+    private ChatThread chatThread; // 외래 키 매핑
 
     public static Contact toEntity(ContactSaveRequest request, ChatThread chatThread) {
         Contact contact = Contact.builder()
-            .id(UUID.randomUUID().toString())
             .name(request.getName())
             .phoneNumber(request.getPhoneNumber())
             .question(request.getQuestion())
