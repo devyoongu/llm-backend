@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header">
+    <title>Hello</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body class="sb-nav-fixed">
+<div th:replace="fragments/bodyHeader :: bodyHeader"></div>
+<div id="layoutSidenav">
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <h1 class="mt-4">부서 관리</h1>
+                <ol class="breadcrumb mb-4">
+                </ol>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        DataTables is a third party plugin that is used to generate the demo table below. For more information about DataTables, please visit the
+                        <a target="_blank" href="https://datatables.net/">official DataTables documentation</a>.
+                    </div>
+                </div>
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-table me-1"></i>
+<!--                        DataTable Example-->
+                    </div>
+                    <div class="card-body">
+                        <!-- Table to display ChatLog data -->
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>부서 ID</th>
+                                <th>부서명</th>
+                                <th>직원 정보</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="department : ${departments}">
+                                <td th:text="${department.departmentId}"></td>
+                                <td th:text="${department.departmentName}"></td>
+                                <td>
+                                    <table class="table table-sm table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>직원 ID</th>
+                                            <th>직원명</th>
+                                            <th>담당 업무</th>
+                                            <th>담당 지역</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="employee : ${department.employees}">
+                                            <td th:text="${employee.employeeId}"></td>
+                                            <td th:text="${employee.employeeName}"></td>
+                                            <td>
+                                                <ul>
+                                                    <li th:each="job : ${employee.employeeJobs}" th:text="${job.jobName}"></li>
+                                                </ul>
+                                            </td>
+                                            <td>
+                                                <ul>
+                                                    <li th:each="region : ${employee.employeeRegions}" th:text="${region.region}"></li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <div th:replace="fragments/footer :: footer"></div>
+    </div>
+</div>
+<!-- Contact Modal -->
+<div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="contactModalLabel">Contact Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Name:</strong> <span id="contactName"></span></p>
+                <p><strong>Phone Number:</strong> <span id="contactPhone"></span></p>
+                <p><strong>Question:</strong> <span id="contactQuestion"></span></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

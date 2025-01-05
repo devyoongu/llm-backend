@@ -2,8 +2,12 @@ package com.llm.backend.repository;
 
 import static com.llm.backend.domain.QDepartment.department;
 import static com.llm.backend.domain.QEmployee.employee;
+import static com.llm.backend.domain.QEmployeeJob.employeeJob;
+import static com.llm.backend.domain.QEmployeeRegion.employeeRegion;
 
 import com.llm.backend.dto.DepartmentDto.DepartmentResponseDto;
+import com.llm.backend.dto.DepartmentDto.EmployeeJobDto;
+import com.llm.backend.dto.DepartmentDto.EmployeeRegionDto;
 import com.llm.backend.dto.DepartmentDto.EmployeeResponseDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -46,18 +50,32 @@ public class DepartmentRepositoryImpl implements  DepartmentRepositoryCustom{
                 .where(employee.department.id.eq(dto.getDepartmentId()))
                 .fetch();
 
-//            employees.forEach(dto -> {
-//                queryFactory
-//                    .select(Projections.constructor(
-//                        EmployeeResponseDto.class,
-//                        employee.id.as("employeeId"),
-//                        employee.employeeName.as("employeeName"),
-//                        employee.userId
-//                    ))
-//                    .from(employee)
-//                    .where(employee.department.id.eq(dto.getDepartmentId()))
-//                    .fetch();
-//            });
+            // 직원별 employeeJobs와 employeeRegions 추가 조회
+            employees.forEach(emp -> {
+                List<EmployeeJobDto> jobs = queryFactory
+                    .select(Projections.fields(
+                        EmployeeJobDto.class,
+                        employeeJob.employee.id.as("employeeId"),
+                        employeeJob.job.name.as("jobName")
+                    ))
+                    .from(employeeJob)
+                    .where(employeeJob.employee.id.eq(emp.getEmployeeId()))
+                    .fetch();
+
+                emp.setEmployeeJobs(jobs);
+
+                List<EmployeeRegionDto> regions = queryFactory
+                    .select(Projections.fields(
+                        EmployeeRegionDto.class,
+                        employeeRegion.employee.id.as("employeeId"),
+                        employeeRegion.region.name.as("region")
+                    ))
+                    .from(employeeRegion)
+                    .where(employeeRegion.employee.id.eq(emp.getEmployeeId()))
+                    .fetch();
+
+                emp.setEmployeeRegions(regions);
+            });
 
             dto.setEmployees(employees);
         });
@@ -70,8 +88,5 @@ public class DepartmentRepositoryImpl implements  DepartmentRepositoryCustom{
 
         return new PageImpl<>(results, pageable, total);
     }
-
-
-
 
 }

@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 
 @Data
 public class DepartmentDto {
-
     @Data
     @Builder
     @AllArgsConstructor
@@ -28,6 +27,7 @@ public class DepartmentDto {
         private String employeeName;
         private String userId;
         private List<EmployeeJobDto> employeeJobs;
+        private List<EmployeeRegionDto> employeeRegions;
     }
 
     @Data
@@ -36,7 +36,15 @@ public class DepartmentDto {
     @NoArgsConstructor
     public static class EmployeeJobDto {
         private Long employeeId;
-        private String employeeName;
-        private String userId;
+        private String jobName;
+    }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class EmployeeRegionDto {
+        private Long employeeId;
+        private String region;
     }
 }

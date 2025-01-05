@@ -7,5 +7,4 @@ import org.springframework.data.domain.Pageable;
 public interface DepartmentRepositoryCustom {
 
     Page<DepartmentResponseDto> findDepartmentsWithEmployees(Pageable pageable);
-
 }
