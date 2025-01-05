@@ -1,13 +1,14 @@
 package com.llm.backend.domain;
 
-import java.util.List;
-import javax.persistence.CascadeType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,21 +19,23 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @Getter @Setter
 @NoArgsConstructor
-public class Job extends BaseTimeEntity{
+public class EmployeeJob extends BaseTimeEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "job_id", nullable = false)
+    @Column(name = "employee_job_id", nullable = false)
     private Long id;
 
-    @Column(nullable = false, length = 100)
-    private String name;
-
-    @Column
-    private String description;
-
-    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "job_id")
     @ToString.Exclude
-    private List<EmployeeJob> employeeJobs;
+    @JsonIgnore
+    private Job job;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employee_id")
+    @ToString.Exclude
+    @JsonIgnore
+    private Employee employee;
 
 }

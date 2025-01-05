@@ -1,19 +1,20 @@
 package com.llm.backend.domain;
 
 import com.llm.backend.dto.RegionType;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 @SuperBuilder
@@ -37,8 +38,8 @@ public class Region extends BaseTimeEntity{
     @Column(name = "parent_id")
     private Long parentId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employee_id") // 외래키 설정
-    private Employee employee; // 해당 지역을 담당하는 직원
+    @OneToMany(mappedBy = "region", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    private List<EmployeeRegion> employeeRegions;
 
 }
