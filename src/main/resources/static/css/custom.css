@@ -61,4 +61,55 @@ a:hover {
 }
 
 
+/* 초기 col-full 스타일 */
+.col-full {
+    width: 100%;
+    transition: width 0.3s ease-in-out;
+}
+
+/* 애니메이션 슬라이드 */
+.slide-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50%;
+    height: 100%;
+    background-color: #fff;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease-in-out;
+    z-index: 1050;
+    overflow-y: auto;
+    transform: translateX(100%);
+}
+
+.slide-panel.show {
+    transform: translateX(0)
+}
+
+/*!* 두 패널의 초기 상태 *!*/
+/*.dynamic-panel {*/
+/*    transition: width 0.3s ease-in-out;*/
+/*    float: left;*/
+/*    height: 100%;*/
+/*    overflow-y: auto;*/
+/*}*/
+
+/*#departmentTablePanel {*/
+/*    width: 100%; !* 초기 상태: 부서 정보 테이블이 전체 너비 차지 *!*/
+/*}*/
+
+/*#employeeDetailsPanel {*/
+/*    width: 0; !* 초기 상태: 직원 정보 패널 숨김 *!*/
+/*    background-color: #fff;*/
+/*    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);*/
+/*}*/
+
+/*!* 직원 정보 패널 활성화 상태 *!*/
+/*#departmentTablePanel.shrink {*/
+/*    width: 60%; !* 부서 정보 테이블 너비 줄이기 *!*/
+/*}*/
+
+/*#employeeDetailsPanel.expand {*/
+/*    width: 40%; !* 직원 정보 패널 너비 늘리기 *!*/
+/*}*/
 

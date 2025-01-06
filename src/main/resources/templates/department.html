@@ -11,7 +11,7 @@
     <div id="layoutSidenav_content">
         <main>
             <div class="container-fluid px-4">
-                <h1 class="mt-4">부서 관리</h1>
+                <h1 class="mt-4">부서 및 직원 관리</h1>
                 <ol class="breadcrumb mb-4">
                 </ol>
                 <div class="card mb-4">
@@ -20,27 +20,49 @@
                         <a target="_blank" href="https://datatables.net/">official DataTables documentation</a>.
                     </div>
                 </div>
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <i class="fas fa-table me-1"></i>
-<!--                        DataTable Example-->
+                <div class="row">
+                    <!-- 부서 정보 테이블 -->
+                    <div class="col-full" id="departmentTablePanel">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <i class="fas fa-table me-1"></i>
+                                부서 정보
+                            </div>
+                            <div class="card-body">
+                                <table id="datatablesSimple" class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>부서 ID</th>
+                                        <th>부서명</th>
+                                        <th>직원 수</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="department : ${departments}">
+                                        <td th:text="${department.departmentId}"></td>
+                                        <td th:text="${department.departmentName}"></td>
+                                        <td style="text-align: center">
+                                            <button type="button" class="btn btn-count btn-primary"
+                                                    th:attr="data-department-id=${department.departmentId}">
+                                                <span th:text="${#lists.size(department.employees)} + '명'"></span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <!-- Table to display ChatLog data -->
-                        <table class="table table-bordered">
-                            <thead>
-                            <tr>
-                                <th>부서 ID</th>
-                                <th>부서명</th>
-                                <th>직원 정보</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="department : ${departments}">
-                                <td th:text="${department.departmentId}"></td>
-                                <td th:text="${department.departmentName}"></td>
-                                <td>
-                                    <table class="table table-sm table-striped">
+
+                    <!-- 직원 정보 슬라이드 패널 -->
+                    <div class="slide-panel" id="employeeDetailsPanel">
+                        <div th:each="department : ${departments}" th:attr="data-department-id=${department.departmentId}" class="employee-details-card" style="display: none;">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 th:text="'부서: ' + ${department.departmentName} + ' (직원 ' + ${#lists.size(department.employees)} + '명)'"></h5>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table table-striped">
                                         <thead>
                                         <tr>
                                             <th>직원 ID</th>
@@ -66,36 +88,51 @@
                                         </tr>
                                         </tbody>
                                     </table>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+
+
         </main>
         <div th:replace="fragments/footer :: footer"></div>
     </div>
 </div>
-<!-- Contact Modal -->
-<div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="contactModalLabel">Contact Details</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p><strong>Name:</strong> <span id="contactName"></span></p>
-                <p><strong>Phone Number:</strong> <span id="contactPhone"></span></p>
-                <p><strong>Question:</strong> <span id="contactQuestion"></span></p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const departmentTablePanel = document.getElementById('departmentTablePanel');
+        const employeeDetailsPanel = document.getElementById('employeeDetailsPanel');
+        const employeeCards = document.querySelectorAll('.employee-details-card');
+
+        document.querySelectorAll('.btn-count').forEach(button => {
+            button.addEventListener('click', function () {
+                const departmentId = button.getAttribute('data-department-id');
+
+                // col-full -> col-md-6 변경
+                departmentTablePanel.classList.remove('col-full');
+                departmentTablePanel.classList.add('col-md-6');
+
+                // 모든 카드 숨기기
+                employeeCards.forEach(card => {
+                    card.style.display = 'none';
+                });
+
+                // 해당 부서 ID에 해당하는 카드만 표시
+                const targetCard = document.querySelector(`.employee-details-card[data-department-id="${departmentId}"]`);
+                if (targetCard) {
+                    targetCard.style.display = 'block';
+                }
+
+                // 슬라이드 패널 애니메이션
+                employeeDetailsPanel.classList.add('show');
+            });
+        });
+    });
+;
+
+</script>
 
 </body>
 </html>
