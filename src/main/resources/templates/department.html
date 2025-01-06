@@ -110,48 +110,5 @@
         <div th:replace="fragments/footer :: footer"></div>
     </div>
 </div>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const departmentTablePanel = document.getElementById('departmentTablePanel');
-        const employeeDetailsPanel = document.getElementById('employeeDetailsPanel');
-        const employeeCards = document.querySelectorAll('.employee-details-card');
-
-        document.querySelectorAll('.btn-count').forEach(button => {
-            button.addEventListener('click', function () {
-                const departmentId = button.getAttribute('data-department-id');
-
-                // 모든 카드 숨기기
-                employeeCards.forEach(card => {
-                    card.style.display = 'none';
-                });
-
-                // 해당 부서 ID에 해당하는 카드만 표시
-                const targetCard = document.querySelector(`.employee-details-card[data-department-id="${departmentId}"]`);
-                if (targetCard) {
-                    targetCard.style.display = 'block';
-                }
-
-                // 부서 정보 패널과 직원 정보 패널의 애니메이션 동기화
-                departmentTablePanel.classList.add('shrink');
-                employeeDetailsPanel.classList.add('expand');
-            });
-        });
-
-        // 이벤트 위임 방식으로 닫기 버튼 처리
-        employeeDetailsPanel.addEventListener('click', function (event) {
-            if (event.target.matches('.close-btn')) {
-                departmentTablePanel.classList.remove('shrink');
-                employeeDetailsPanel.classList.remove('expand');
-
-                // 모든 카드 숨기기
-                employeeCards.forEach(card => {
-                    card.style.display = 'none';
-                });
-            }
-        });
-    });
-
-</script>
-
 </body>
 </html>
