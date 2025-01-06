@@ -79,37 +79,58 @@ a:hover {
     transition: transform 0.3s ease-in-out;
     z-index: 1050;
     overflow-y: auto;
-    transform: translateX(100%);
 }
 
 .slide-panel.show {
     transform: translateX(0)
 }
 
+.employee-card {
+    position: relative;
+    margin-top: 10px;
+}
+
 /*!* 두 패널의 초기 상태 *!*/
-/*.dynamic-panel {*/
-/*    transition: width 0.3s ease-in-out;*/
-/*    float: left;*/
-/*    height: 100%;*/
-/*    overflow-y: auto;*/
-/*}*/
+.employee-details-card {
+    position: relative;
+    display: none;
+}
 
-/*#departmentTablePanel {*/
-/*    width: 100%; !* 초기 상태: 부서 정보 테이블이 전체 너비 차지 *!*/
-/*}*/
+.dynamic-panel {
+    transition: width 0.3s ease-in-out;
+    float: left;
+    height: 100%;
+    overflow-y: auto;
+}
 
-/*#employeeDetailsPanel {*/
-/*    width: 0; !* 초기 상태: 직원 정보 패널 숨김 *!*/
-/*    background-color: #fff;*/
-/*    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);*/
-/*}*/
+#departmentTablePanel {
+    width: 100%; /* 초기 상태: 부서 정보 테이블이 전체 너비 차지 */
+}
 
-/*!* 직원 정보 패널 활성화 상태 *!*/
-/*#departmentTablePanel.shrink {*/
-/*    width: 60%; !* 부서 정보 테이블 너비 줄이기 *!*/
-/*}*/
+#employeeDetailsPanel {
+    width: 0; /* 초기 상태: 직원 정보 패널 숨김 */
+    box-shadow: none;
+}
 
-/*#employeeDetailsPanel.expand {*/
-/*    width: 40%; !* 직원 정보 패널 너비 늘리기 *!*/
-/*}*/
+/* 직원 정보 패널 활성화 상태 */
+#departmentTablePanel.shrink {
+    width: 55%; /* 부서 정보 테이블 너비 줄이기 */
+}
+
+#employeeDetailsPanel.expand {
+    width: 40%; /* 직원 정보 패널 너비 늘리기 */
+    background-color: #fff;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+}
+
+/* 닫기 버튼 위치 및 스타일 */
+.close-btn {
+    position: absolute;
+    top: -2px;
+    right: 10px;
+    z-index: 2000;
+    font-size: 14px;
+    padding: 5px 10px;
+}
+
 
