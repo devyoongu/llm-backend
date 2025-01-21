@@ -1,10 +1,12 @@
 package com.llm.backend.repository;
 
 import static com.llm.backend.domain.QDepartment.department;
+import static com.llm.backend.domain.QDepartmentJob.departmentJob;
 import static com.llm.backend.domain.QEmployee.employee;
 import static com.llm.backend.domain.QEmployeeJob.employeeJob;
 import static com.llm.backend.domain.QEmployeeRegion.employeeRegion;
 
+import com.llm.backend.dto.DepartmentDto.DepartmentJobDto;
 import com.llm.backend.dto.DepartmentDto.DepartmentResponseDto;
 import com.llm.backend.dto.DepartmentDto.EmployeeJobDto;
 import com.llm.backend.dto.DepartmentDto.EmployeeRegionDto;
@@ -29,7 +31,8 @@ public class DepartmentRepositoryImpl implements  DepartmentRepositoryCustom{
             .select(Projections.fields(
                 DepartmentResponseDto.class,
                 department.id.as("departmentId"),
-                department.departmentName.as("departmentName")
+                department.departmentName.as("departmentName"),
+                department.mainPhone.as("mainPhone")
             ))
             .from(department)
             .orderBy(department.id.asc())
@@ -39,12 +42,24 @@ public class DepartmentRepositoryImpl implements  DepartmentRepositoryCustom{
 
         // 2. 각 부서에 속한 직원 리스트 추가 조회
         results.forEach(dto -> {
+            List<DepartmentJobDto> departmentJobs = queryFactory
+                .select(Projections.fields(
+                    DepartmentJobDto.class,
+                    departmentJob.department.id.as("departmentId"),
+                    departmentJob.job.name.as("jobName")
+                ))
+                .from(departmentJob)
+                .where(departmentJob.department.id.eq(dto.getDepartmentId()))
+                .fetch();
+
+            dto.setDepartmentJobs(departmentJobs);
+
             List<EmployeeResponseDto> employees = queryFactory
                 .select(Projections.fields(
                     EmployeeResponseDto.class,
                     employee.id.as("employeeId"),
                     employee.employeeName.as("employeeName"),
-                    employee.userId
+                    employee.personalPhone.as("personalPhone")
                 ))
                 .from(employee)
                 .where(employee.department.id.eq(dto.getDepartmentId()))

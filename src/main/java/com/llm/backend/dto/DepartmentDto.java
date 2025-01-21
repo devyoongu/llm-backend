@@ -15,7 +15,9 @@ public class DepartmentDto {
     public static class DepartmentResponseDto {
         private Long departmentId;
         private String departmentName;
+        private String mainPhone;
         private List<EmployeeResponseDto> employees;
+        private List<DepartmentJobDto> departmentJobs;
     }
 
     @Data
@@ -25,7 +27,7 @@ public class DepartmentDto {
     public static class EmployeeResponseDto {
         private Long employeeId;
         private String employeeName;
-        private String userId;
+        private String personalPhone;
         private List<EmployeeJobDto> employeeJobs;
         private List<EmployeeRegionDto> employeeRegions;
     }
@@ -36,6 +38,15 @@ public class DepartmentDto {
     @NoArgsConstructor
     public static class EmployeeJobDto {
         private Long employeeId;
+        private String jobName;
+    }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class DepartmentJobDto {
+        private Long departmentId;
         private String jobName;
     }
 

@@ -31,6 +31,7 @@
                                         <col span="1" style="width: 70px;">
                                         <col span="1">
                                         <col span="1">
+                                        <col span="1">
                                         <col span="1" style="width: 100px;">
                                     </colgroup>
                                     <thead>
@@ -38,6 +39,7 @@
                                         <th>부서 ID</th>
                                         <th>부서명</th>
                                         <th>전화번호</th>
+                                        <th>담당업무</th>
                                         <th>직원 수</th>
                                     </tr>
                                     </thead>
@@ -45,7 +47,12 @@
                                     <tr th:each="department : ${departments}">
                                         <td th:text="${department.departmentId}"></td>
                                         <td th:text="${department.departmentName}"></td>
-                                        <td> </td>
+                                        <td th:text="${department.mainPhone}"></td>
+                                        <td>
+                                            <ul>
+                                                <li th:each="job : ${department.departmentJobs}" th:text="${job.jobName}"></li>
+                                            </ul>
+                                        </td>
                                         <td style="text-align: center">
                                             <button type="button" class="btn btn-count btn-primary"
                                                     th:attr="data-department-id=${department.departmentId}">
@@ -73,16 +80,16 @@
                                     <table class="table table-bordered">
                                         <thead>
                                         <tr>
-                                            <th>직원 ID</th>
                                             <th>직원명</th>
+                                            <th>직원 연락처</th>
                                             <th>담당 업무</th>
                                             <th>담당 지역</th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         <tr th:each="employee : ${department.employees}">
-                                            <td th:text="${employee.employeeId}"></td>
                                             <td th:text="${employee.employeeName}"></td>
+                                            <td th:text="${employee.personalPhone}"></td>
                                             <td>
                                                 <ul>
                                                     <li th:each="job : ${employee.employeeJobs}" th:text="${job.jobName}"></li>

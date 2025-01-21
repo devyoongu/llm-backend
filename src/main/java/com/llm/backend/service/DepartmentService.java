@@ -17,29 +17,10 @@ public class DepartmentService {
 
     private final DepartmentRepository departmentRepository;
 
-
     @Transactional(readOnly = true)
     public List<DepartmentResponseDto> findDepartmentsWithEmployees(Pageable pageable) {
         Page<DepartmentResponseDto> departments = departmentRepository.findDepartmentsWithEmployees(pageable);
 
         return departments.getContent();
-
-        /*List<DepartmentResponseDto> departmentResponses = departments.stream()
-            .map(department -> DepartmentResponseDto.builder()
-                .departmentId(department.getDepartmentId())
-                .departmentName(department.getDepartmentName())
-                .employees(department.getEmployees().stream()
-                    .map(employee -> EmployeeResponseDto.builder()
-                        .employeeId(employee.getEmployeeId())
-                        .employeeName(employee.getEmployeeName())
-                        .userId(employee.getUserId())
-                        .build())
-                    .collect(Collectors.toList()))
-                .build())
-            .collect(Collectors.toList());
-
-        return departmentResponses;*/
     }
-
-
 }
