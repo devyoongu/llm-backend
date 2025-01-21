@@ -23,7 +23,7 @@ public class SqlDeckController {
     @PostMapping("/api/sqldeck/execute")
     public ResponseEntity<CommonResponse> executeSqlDeck(@RequestBody SqlDeckRequest request) {
         try {
-            log.info("execute query is {}",request.getSqlQuery());
+            log.info("execute query is >>> {}",request.getSqlQuery());
             List<Map<String, Object>> result = sqlDeckService.executeNativeQuery(request.getSqlQuery());
             return ResponseEntity.ok(CommonResponse.ok(result));
         } catch (PersistenceException e) {
