@@ -45,7 +45,7 @@ public class ChatThread extends BaseTimeEntity{
             .chatLogs(new ArrayList<>())
             .build();
 
-        request.getChatLogs().forEach(dto -> chatThread.addChatLog(ChatLog.toEntity(dto)));
+//        request.getChatLogs().forEach(dto -> chatThread.addChatLog(ChatLog.toEntity(dto)));
 
         return chatThread;
     }
