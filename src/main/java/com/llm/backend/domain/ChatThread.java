@@ -6,8 +6,6 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import lombok.Getter;
@@ -23,9 +21,8 @@ import lombok.experimental.SuperBuilder;
 public class ChatThread extends BaseTimeEntity{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // 자동 증가 설정
     @Column(name = "chat_thread_id")
-    private Long id;
+    private String id;
 
     private String name;
 
@@ -43,6 +40,7 @@ public class ChatThread extends BaseTimeEntity{
 
     public static ChatThread toEntity(ChatSaveRequest request) {
         ChatThread chatThread = ChatThread.builder()
+            .id(request.getChatThreadId())
             .name(request.getChatThreadName())
             .chatLogs(new ArrayList<>())
             .build();

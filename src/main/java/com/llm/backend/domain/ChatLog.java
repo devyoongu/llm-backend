@@ -2,11 +2,10 @@ package com.llm.backend.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.llm.backend.dto.ChatDto.ChatLogDto;
+import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -23,9 +22,8 @@ import lombok.experimental.SuperBuilder;
 public class ChatLog extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // 자동 증가 설정
     @Column(name = "chat_log_id")
-    private Long id;
+    private String id;
 
     private String role;
 
@@ -47,6 +45,7 @@ public class ChatLog extends BaseTimeEntity {
 
     public static ChatLog toEntity(ChatLogDto chatLogDto) {
         return ChatLog.builder()
+            .id(UUID.randomUUID().toString())
             .role(chatLogDto.getRole())
             .content(chatLogDto.getContent())
             .createdTime(chatLogDto.getCreatedTime())

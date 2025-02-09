@@ -14,7 +14,7 @@ public class ChatDto {
 
     @Data
     public static class ChatSaveRequest {
-        public Long chatThreadId;
+        public String chatThreadId;
         public String chatThreadName;
         public List<ChatLogDto> chatLogs;
     }
@@ -37,7 +37,7 @@ public class ChatDto {
     @Getter
     public static class ChatThreadResponseDto {
         private LocalDateTime createdDate;
-        private Long chatThreadId;
+        private String chatThreadId;
         private Long userChatLogCount;
         private List<ChatLogDto> chatLogs;
         private ContactResponse contact;
