@@ -12,6 +12,11 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import com.llm.backend.dto.CommonResponse;
+import com.llm.backend.dto.DepartmentDto.DepartmentSaveRequest;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Slf4j
 @Controller
@@ -28,5 +33,11 @@ public class DepartmentController {
         model.addAttribute("departments", departments);
 
         return "department";
+    }
+
+    @PostMapping("/api/department")
+    public ResponseEntity<CommonResponse> saveDepartment(@RequestBody DepartmentSaveRequest request) {
+        DepartmentResponseDto savedDepartment = departmentService.saveDepartment(request);
+        return ResponseEntity.ok(CommonResponse.ok(savedDepartment));
     }
 }

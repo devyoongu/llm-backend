@@ -58,4 +58,16 @@ public class DepartmentDto {
         private Long employeeId;
         private String region;
     }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class DepartmentSaveRequest {
+        private String departmentName;
+        private String mainPhone;
+        private Long parentId;
+        private int depth;
+        private List<String> jobNames; // 부서에 할당할 직무 이름 목록
+    }
 }

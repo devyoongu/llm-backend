@@ -107,5 +107,83 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // 부서 저장 버튼 클릭 이벤트
+
+    const departmentModal = document.getElementById('departmentModal');
+    if (departmentModal) {
+        // 저장 버튼 이벤트
+        const saveDepartmentBtn = document.getElementById('saveDepartmentBtn');
+        if (saveDepartmentBtn) {
+            saveDepartmentBtn.addEventListener('click', function() {
+                const departmentName = document.getElementById('departmentName').value;
+                const mainPhone = document.getElementById('mainPhone').value;
+                const parentId = document.getElementById('parentId').value;
+                const depth = document.getElementById('depth').value;
+                const jobNamesStr = document.getElementById('jobNames').value;
+
+                if (!departmentName) {
+                    alert('부서명은 필수입니다.');
+                    return;
+                }
+
+                const requestData = {
+                    departmentName: departmentName,
+                    mainPhone: mainPhone,
+                    parentId: parentId ? parseInt(parentId) : null,
+                    depth: parseInt(depth) || 0,
+                    jobNames: jobNamesStr ? jobNamesStr.split(',').map(job => job.trim()) : []
+                };
+
+                fetch('/api/department', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 'SUCCESS') {
+                        alert('부서가 성공적으로 추가되었습니다.');
+                        // 모든 입력 필드의 포커스 해제
+                        document.activeElement.blur();
+                        // 폼 초기화
+                        document.getElementById('departmentForm').reset();
+                        // Bootstrap의 방식으로 모달 닫기
+                        const bsModal = bootstrap.Modal.getInstance(departmentModal);
+                        if (bsModal) {
+                            bsModal.hide();
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 100);
+                        }
+                    } else {
+                        alert('부서 추가에 실패했습니다: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('부서 추가 중 오류가 발생했습니다.');
+                });
+            });
+        }
+
+        // 모달이 열릴 때 이벤트
+        departmentModal.addEventListener('show.bs.modal', function () {
+            // 이전 입력값 초기화
+            document.getElementById('departmentForm').reset();
+        });
+
+        // 모달이 닫히기 전 이벤트
+        departmentModal.addEventListener('hide.bs.modal', function () {
+            // 활성화된 요소의 포커스 해제
+            document.activeElement.blur();
+        });
+
+        // 모달이 닫힌 후 이벤트
+        departmentModal.addEventListener('hidden.bs.modal', function () {
+            document.getElementById('departmentForm').reset();
+        });
+    }
 
 });
