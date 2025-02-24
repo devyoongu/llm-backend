@@ -116,32 +116,72 @@
             formData.append('file', file);
             formData.append('type', type);
 
+            // FastAPI 서버로 먼저 요청
             fetch('http://0.0.0.0:8000/upload', {
                 method: 'POST',
                 body: formData,
             })
             .then(response => {
                 if (response.ok) {
-                    // Toast 표시
+                    // FastAPI 업로드 성공 시 스프링 서버에 메타데이터만 전송
+                    const fileMetadata = {
+                        fileName: file.name,
+                        fileType: type,
+                        fileSize: Math.floor(file.size / 1024), // KB로 변환
+                        uploadSuccess: true,
+                        errorMessage: null
+                    };
+
+                    return fetch('/api/embedding/upload', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(fileMetadata),
+                    });
+                } else {
+                    throw new Error('FastAPI 서버 업로드 실패');
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 'SUCCESS') {
                     uploadSuccessToast.show();
-
-                    // 모달 닫기
                     modalInstance.hide();
-
-                    // 폼 초기화
                     document.getElementById('fileUploadForm').reset();
                     fileDetails.innerHTML = '';
-
-                    // 수동으로 backdrop 및 body 클래스 제거
                     document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
                     document.body.classList.remove('modal-open');
                 } else {
-                    alert('파일 업로드에 실패했습니다.');
+                    alert('파일 업로드에 실패했습니다: ' + data.message);
                 }
             })
             .catch(error => {
                 console.error('파일 업로드 중 오류 발생:', error);
-                alert('파일 업로드 중 오류가 발생했습니다.');
+                
+                // 에러 발생 시에도 스프링 서버에 실패 기록
+                const fileMetadata = {
+                    fileName: file.name,
+                    fileType: type,
+                    fileSize: Math.floor(file.size / 1024),
+                    uploadSuccess: false,
+                    errorMessage: error.message
+                };
+
+                fetch('/api/embedding/upload', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(fileMetadata),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert('파일 업로드 중 오류가 발생했습니다.');
+                })
+                .catch(error => {
+                    console.error('스프링 서버 기록 중 오류 발생:', error);
+                });
             });
         });
 

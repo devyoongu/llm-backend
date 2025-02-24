@@ -1,6 +1,5 @@
 package com.llm.backend.controller;
 
-import com.llm.backend.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -14,11 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-public class EmbedingController {
-
-    private final ChatService chatService;
-
-    @GetMapping("/embeding")
+public class EmbeddingController {
+    @GetMapping("/embedding")
     @CrossOrigin(origins = "http://localhost:8080")
     public String searchChatLog(@PageableDefault(size = 10, sort = "createdDate",direction = Sort.Direction.DESC) Pageable pageable, Model model) {
 
@@ -26,7 +22,6 @@ public class EmbedingController {
 //
 //        model.addAttribute("chatThreads", chatThreads);
 
-        return "embeding";
+        return "embedding";
     }
-
 }
