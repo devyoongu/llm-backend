@@ -21,6 +21,40 @@
                         </button>
                     </div>
                 </div>
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-table me-1"></i>
+                        업로드된 파일 목록
+                    </div>
+                    <div class="card-body">
+                        <table id="datatablesSimple" class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>파일명</th>
+                                    <th>타입</th>
+                                    <th>파일크기(KB)</th>
+                                    <th>업로드 상태</th>
+                                    <th>업로드 일시</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="file : ${embeddingFiles}">
+                                    <td th:text="${file.fileName}"></td>
+                                    <td>
+                                        <span th:text="${file.fileType == 'document' ? '문서' : '조직도'}"></span>
+                                    </td>
+                                    <td th:text="${file.fileSize}"></td>
+                                    <td>
+                                        <span th:if="${file.uploadSuccess}" class="text-success">성공</span>
+                                        <span th:unless="${file.uploadSuccess}" class="text-danger" 
+                                              th:title="${file.errorMessage}">실패</span>
+                                    </td>
+                                    <td th:text="${#temporals.format(file.uploadDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </main>
         <div th:replace="fragments/footer :: footer"></div>
@@ -152,6 +186,9 @@
                     fileDetails.innerHTML = '';
                     document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
                     document.body.classList.remove('modal-open');
+                    
+                    // 페이지 새로고침
+                    window.location.reload();
                 } else {
                     alert('파일 업로드에 실패했습니다: ' + data.message);
                 }
@@ -178,9 +215,12 @@
                 .then(response => response.json())
                 .then(data => {
                     alert('파일 업로드 중 오류가 발생했습니다.');
+                    // 실패 기록 후에도 페이지 새로고침
+                    window.location.reload();
                 })
                 .catch(error => {
                     console.error('스프링 서버 기록 중 오류 발생:', error);
+                    window.location.reload();
                 });
             });
         });

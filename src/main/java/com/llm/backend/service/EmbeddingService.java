@@ -6,8 +6,12 @@ import com.llm.backend.dto.EmbeddingFileDto.EmbeddingFileRequest;
 import com.llm.backend.repository.EmbeddingFileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -28,6 +32,14 @@ public class EmbeddingService {
 
         EmbeddingFile savedFile = embeddingFileRepository.save(embeddingFile);
         return convertToDto(savedFile);
+    }
+
+    @Transactional(readOnly = true)
+    public List<EmbeddingFileResponseDto> findEmbeddingFiles(Pageable pageable) {
+        return embeddingFileRepository.findAll(pageable)
+            .stream()
+            .map(this::convertToDto)
+            .collect(Collectors.toList());
     }
 
     private EmbeddingFileResponseDto convertToDto(EmbeddingFile entity) {
