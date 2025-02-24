@@ -64,10 +64,19 @@
                                             </ul>
                                         </td>
                                         <td style="text-align: center">
-                                            <button type="button" class="btn btn-count btn-primary"
-                                                    th:attr="data-department-id=${department.departmentId}">
-                                                <span th:text="${#lists.size(department.employees)} + '명'"></span>
-                                            </button>
+                                            <div class="d-flex justify-content-center gap-2">
+                                                <button type="button" class="btn btn-count btn-primary"
+                                                        th:attr="data-department-id=${department.departmentId}">
+                                                    <span th:text="${#lists.size(department.employees)} + '명'"></span>
+                                                </button>
+                                                <button type="button" class="btn btn-success btn-add-employee"
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#employeeModal"
+                                                        th:attr="data-department-id=${department.departmentId},
+                                                                 data-department-name=${department.departmentName}">
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -163,6 +172,51 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
                 <button type="button" class="btn btn-primary" id="saveDepartmentBtn">저장</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Employee Modal -->
+<div class="modal fade" id="employeeModal" tabindex="-1" role="dialog" aria-labelledby="employeeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="employeeModalLabel">직원 추가</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="employeeForm">
+                    <input type="hidden" id="employeeDepartmentId">
+                    <div class="mb-3">
+                        <label class="form-label">부서명</label>
+                        <input type="text" class="form-control" id="employeeDepartmentName" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="userId" class="form-label">사용자 ID</label>
+                        <input type="text" class="form-control" id="userId" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="employeeName" class="form-label">직원명</label>
+                        <input type="text" class="form-control" id="employeeName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="extensionNumber" class="form-label">내선번호</label>
+                        <input type="text" class="form-control" id="extensionNumber">
+                    </div>
+                    <div class="mb-3">
+                        <label for="personalPhone" class="form-label">개인 연락처</label>
+                        <input type="text" class="form-control" id="personalPhone">
+                    </div>
+                    <div class="mb-3">
+                        <label for="employeeJobNames" class="form-label">담당업무 (쉼표로 구분)</label>
+                        <input type="text" class="form-control" id="employeeJobNames" placeholder="예: 영업,고객관리">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-primary" id="saveEmployeeBtn">저장</button>
             </div>
         </div>
     </div>

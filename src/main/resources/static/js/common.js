@@ -186,4 +186,80 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // 직원 추가 모달 관련 코드
+    const employeeModal = document.getElementById('employeeModal');
+    if (employeeModal) {
+        employeeModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const departmentId = button.getAttribute('data-department-id');
+            const departmentName = button.getAttribute('data-department-name');
+            
+            document.getElementById('employeeDepartmentId').value = departmentId;
+            document.getElementById('employeeDepartmentName').value = departmentName;
+        });
+
+        // 저장 버튼 이벤트
+        const saveEmployeeBtn = document.getElementById('saveEmployeeBtn');
+        if (saveEmployeeBtn) {
+            saveEmployeeBtn.addEventListener('click', function() {
+                const departmentId = document.getElementById('employeeDepartmentId').value;
+                const userId = document.getElementById('userId').value;
+                const employeeName = document.getElementById('employeeName').value;
+                const extensionNumber = document.getElementById('extensionNumber').value;
+                const personalPhone = document.getElementById('personalPhone').value;
+                const jobNamesStr = document.getElementById('employeeJobNames').value;
+                const regionsStr = document.getElementById('regions').value;
+
+                if (!employeeName || !userId) {
+                    alert('직원명과 사용자 ID는 필수입니다.');
+                    return;
+                }
+
+                const requestData = {
+                    departmentId: parseInt(departmentId),
+                    userId: userId,
+                    employeeName: employeeName,
+                    extensionNumber: extensionNumber,
+                    personalPhone: personalPhone,
+                    jobNames: jobNamesStr ? jobNamesStr.split(',').map(job => job.trim()) : [],
+                    regions: regionsStr ? regionsStr.split(',').map(region => region.trim()) : []
+                };
+
+                fetch('/api/employee', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 'SUCCESS') {
+                        alert('직원이 성공적으로 추가되었습니다.');
+                        document.activeElement.blur();
+                        document.getElementById('employeeForm').reset();
+                        const bsModal = bootstrap.Modal.getInstance(employeeModal);
+                        if (bsModal) {
+                            bsModal.hide();
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 100);
+                        }
+                    } else {
+                        alert('직원 추가에 실패했습니다: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('직원 추가 중 오류가 발생했습니다.');
+                });
+            });
+        }
+
+        // 모달이 닫힐 때 폼 초기화
+        employeeModal.addEventListener('hidden.bs.modal', function () {
+            document.getElementById('employeeForm').reset();
+        });
+    }
+
 });
