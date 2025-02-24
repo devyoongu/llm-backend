@@ -6,6 +6,7 @@ import com.llm.backend.domain.Job;
 import com.llm.backend.dto.DepartmentDto.DepartmentJobDto;
 import com.llm.backend.dto.DepartmentDto.DepartmentResponseDto;
 import com.llm.backend.dto.DepartmentDto.DepartmentSaveRequest;
+import com.llm.backend.dto.DepartmentDto.DepartmentUpdateRequest;
 import com.llm.backend.repository.DepartmentRepository;
 import com.llm.backend.repository.JobRepository;
 import com.llm.backend.repository.DepartmentJobRepository;
@@ -69,6 +70,52 @@ public class DepartmentService {
             .departmentId(savedDepartment.getId())
             .departmentName(savedDepartment.getDepartmentName())
             .mainPhone(savedDepartment.getMainPhone())
+            .departmentJobs(departmentJobs.stream()
+                .map(dj -> DepartmentJobDto.builder()
+                    .departmentId(dj.getDepartment().getId())
+                    .jobName(dj.getJob().getName())
+                    .build())
+                .collect(Collectors.toList()))
+            .build();
+    }
+
+    @Transactional
+    public DepartmentResponseDto updateDepartment(DepartmentUpdateRequest request) {
+        Department department = departmentRepository.findById(request.getDepartmentId())
+            .orElseThrow(() -> new IllegalArgumentException("Department not found"));
+
+        // 기본 정보 업데이트
+        department.setDepartmentName(request.getDepartmentName());
+        department.setMainPhone(request.getMainPhone());
+        department.setParentId(request.getParentId());
+        department.setDepth(request.getDepth());
+
+        // 기존 직무 관계 삭제
+        departmentJobRepository.deleteByDepartmentId(department.getId());
+
+        // 새로운 직무 관계 생성
+        List<DepartmentJob> departmentJobs = new ArrayList<>();
+        if (request.getJobNames() != null && !request.getJobNames().isEmpty()) {
+            for (String jobName : request.getJobNames()) {
+                Job job = jobRepository.findByName(jobName)
+                    .orElseGet(() -> jobRepository.save(Job.builder()
+                        .name(jobName)
+                        .build()));
+
+                DepartmentJob departmentJob = DepartmentJob.builder()
+                    .department(department)
+                    .job(job)
+                    .build();
+
+                departmentJobs.add(departmentJob);
+            }
+            departmentJobRepository.saveAll(departmentJobs);
+        }
+
+        return DepartmentResponseDto.builder()
+            .departmentId(department.getId())
+            .departmentName(department.getDepartmentName())
+            .mainPhone(department.getMainPhone())
             .departmentJobs(departmentJobs.stream()
                 .map(dj -> DepartmentJobDto.builder()
                     .departmentId(dj.getDepartment().getId())

@@ -70,4 +70,17 @@ public class DepartmentDto {
         private int depth;
         private List<String> jobNames; // 부서에 할당할 직무 이름 목록
     }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class DepartmentUpdateRequest {
+        private Long departmentId;
+        private String departmentName;
+        private String mainPhone;
+        private Long parentId;
+        private int depth;
+        private List<String> jobNames;
+    }
 }

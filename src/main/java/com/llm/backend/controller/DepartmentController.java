@@ -17,6 +17,9 @@ import com.llm.backend.dto.DepartmentDto.DepartmentSaveRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import com.llm.backend.dto.DepartmentDto.DepartmentUpdateRequest;
 
 @Slf4j
 @Controller
@@ -39,5 +42,14 @@ public class DepartmentController {
     public ResponseEntity<CommonResponse> saveDepartment(@RequestBody DepartmentSaveRequest request) {
         DepartmentResponseDto savedDepartment = departmentService.saveDepartment(request);
         return ResponseEntity.ok(CommonResponse.ok(savedDepartment));
+    }
+
+    @PutMapping("/api/department/{id}")
+    public ResponseEntity<CommonResponse> updateDepartment(
+        @PathVariable("id") Long departmentId,
+        @RequestBody DepartmentUpdateRequest request) {
+        request.setDepartmentId(departmentId);
+        DepartmentResponseDto updatedDepartment = departmentService.updateDepartment(request);
+        return ResponseEntity.ok(CommonResponse.ok(updatedDepartment));
     }
 }

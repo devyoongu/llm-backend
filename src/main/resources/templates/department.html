@@ -56,7 +56,20 @@
                                     <tbody>
                                     <tr th:each="department : ${departments}">
                                         <td th:text="${department.departmentId}"></td>
-                                        <td th:text="${department.departmentName}"></td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <span th:text="${department.departmentName}"></span>
+                                                <button type="button" class="btn btn-sm btn-outline-primary ms-2"
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#editDepartmentModal"
+                                                        th:attr="data-department-id=${department.departmentId},
+                                                                 data-department-name=${department.departmentName},
+                                                                 data-main-phone=${department.mainPhone},
+                                                                 data-job-names=${#strings.listJoin(department.departmentJobs.![jobName], ',')}">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                            </div>
+                                        </td>
                                         <td th:text="${department.mainPhone}"></td>
                                         <td>
                                             <ul>
@@ -64,19 +77,10 @@
                                             </ul>
                                         </td>
                                         <td style="text-align: center">
-                                            <div class="d-flex justify-content-center gap-2">
-                                                <button type="button" class="btn btn-count btn-primary"
-                                                        th:attr="data-department-id=${department.departmentId}">
-                                                    <span th:text="${#lists.size(department.employees)} + '명'"></span>
-                                                </button>
-                                                <button type="button" class="btn btn-success btn-add-employee"
-                                                        data-bs-toggle="modal" 
-                                                        data-bs-target="#employeeModal"
-                                                        th:attr="data-department-id=${department.departmentId},
-                                                                 data-department-name=${department.departmentName}">
-                                                    <i class="fas fa-plus"></i>
-                                                </button>
-                                            </div>
+                                            <button type="button" class="btn btn-count btn-primary"
+                                                    th:attr="data-department-id=${department.departmentId}">
+                                                <span th:text="${#lists.size(department.employees)} + '명'"></span>
+                                            </button>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -88,12 +92,25 @@
                     <!-- 직원 정보 슬라이드 패널 -->
                     <div class="dynamic-panel slide-panel" id="employeeDetailsPanel">
                         <div th:each="department : ${departments}" th:attr="data-department-id=${department.departmentId}" class="employee-details-card">
-                            <h2 class="mt-4">직원 상세 정보</h2>
-                            <button type="button" class="close-btn btn btn-danger" id="closeEmployeePanel">닫기</button>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h2 class="mt-4">직원 상세 정보</h2>
+                                <div>
+                                    <button type="button" class="close-btn btn btn-danger" id="closeEmployeePanel">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
                             <div class="card employee-card">
                                 <div class="card-header">
                                     <i class="fas fa-table me-1"></i>
                                     <span th:text="'부서: ' + ${department.departmentName} + ' (직원 ' + ${#lists.size(department.employees)} + '명)'"></span>
+                                    <button type="button" class="btn btn-success btn-add-employee me-2"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#employeeModal"
+                                            th:attr="data-department-id=${department.departmentId},
+                                                     data-department-name=${department.departmentName}">
+                                        <i class="fas fa-user-plus"></i> 직원 추가
+                                    </button>
                                 </div>
                                 <div class="card-body">
                                     <table class="table table-bordered">
@@ -217,6 +234,47 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
                 <button type="button" class="btn btn-primary" id="saveEmployeeBtn">저장</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Department Modal -->
+<div class="modal fade" id="editDepartmentModal" tabindex="-1" role="dialog" aria-labelledby="editDepartmentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editDepartmentModalLabel">부서 정보 수정</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editDepartmentForm">
+                    <input type="hidden" id="editDepartmentId">
+                    <div class="mb-3">
+                        <label for="editDepartmentName" class="form-label">부서명</label>
+                        <input type="text" class="form-control" id="editDepartmentName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editMainPhone" class="form-label">전화번호</label>
+                        <input type="text" class="form-control" id="editMainPhone">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editParentId" class="form-label">상위부서 ID</label>
+                        <input type="number" class="form-control" id="editParentId">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editDepth" class="form-label">부서 깊이</label>
+                        <input type="number" class="form-control" id="editDepth">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editJobNames" class="form-label">담당업무 (쉼표로 구분)</label>
+                        <input type="text" class="form-control" id="editJobNames" placeholder="예: 영업,고객관리">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-primary" id="updateDepartmentBtn">저장</button>
             </div>
         </div>
     </div>

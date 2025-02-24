@@ -262,4 +262,75 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // 부서 수정 모달 관련 코드
+    const editDepartmentModal = document.getElementById('editDepartmentModal');
+    if (editDepartmentModal) {
+        editDepartmentModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const departmentId = button.getAttribute('data-department-id');
+            const departmentName = button.getAttribute('data-department-name');
+            const mainPhone = button.getAttribute('data-main-phone');
+            const jobNames = button.getAttribute('data-job-names');
+            
+            document.getElementById('editDepartmentId').value = departmentId;
+            document.getElementById('editDepartmentName').value = departmentName;
+            document.getElementById('editMainPhone').value = mainPhone;
+            document.getElementById('editJobNames').value = jobNames;
+        });
+
+        const updateDepartmentBtn = document.getElementById('updateDepartmentBtn');
+        if (updateDepartmentBtn) {
+            updateDepartmentBtn.addEventListener('click', function() {
+                const departmentId = document.getElementById('editDepartmentId').value;
+                const departmentName = document.getElementById('editDepartmentName').value;
+                const mainPhone = document.getElementById('editMainPhone').value;
+                const parentId = document.getElementById('editParentId').value;
+                const depth = document.getElementById('editDepth').value;
+                const jobNamesStr = document.getElementById('editJobNames').value;
+
+                if (!departmentName) {
+                    alert('부서명은 필수입니다.');
+                    return;
+                }
+
+                const requestData = {
+                    departmentName: departmentName,
+                    mainPhone: mainPhone,
+                    parentId: parentId ? parseInt(parentId) : null,
+                    depth: parseInt(depth) || 0,
+                    jobNames: jobNamesStr ? jobNamesStr.split(',').map(job => job.trim()) : []
+                };
+
+                fetch(`/api/department/${departmentId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 'SUCCESS') {
+                        alert('부서 정보가 성공적으로 수정되었습니다.');
+                        document.activeElement.blur();
+                        document.getElementById('editDepartmentForm').reset();
+                        const bsModal = bootstrap.Modal.getInstance(editDepartmentModal);
+                        if (bsModal) {
+                            bsModal.hide();
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 100);
+                        }
+                    } else {
+                        alert('부서 정보 수정에 실패했습니다: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('부서 정보 수정 중 오류가 발생했습니다.');
+                });
+            });
+        }
+    }
+
 });

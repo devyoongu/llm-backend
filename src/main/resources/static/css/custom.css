@@ -125,12 +125,17 @@ a:hover {
 
 /* 닫기 버튼 위치 및 스타일 */
 .close-btn {
-    position: absolute;
+    /* position: absolute;
     top: -2px;
-    right: 10px;
+    right: 10px; */
+    float: right;
     z-index: 2000;
     font-size: 14px;
     padding: 5px 10px;
+}
+
+.btn-add-employee {
+    float: right;
 }
 
 
