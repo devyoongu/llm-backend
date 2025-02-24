@@ -42,11 +42,10 @@
                         <input type="file" id="fileInput" class="form-control" accept=".pdf" required>
                     </div>
                     <div class="mb-3">
-                        <label for="fileGroup" class="form-label">파일 그룹 선택</label>
+                        <label for="fileGroup" class="form-label">타입 선택</label>
                         <select id="fileGroup" class="form-select">
-                            <option value="group1">그룹 1</option>
-                            <option value="group2">그룹 2</option>
-                            <option value="group3">그룹 3</option>
+                            <option value="document">문서</option>
+                            <option value="department">조직도</option>
                         </select>
                     </div>
                     <div id="fileDetails" class="mt-3"></div>
@@ -101,16 +100,21 @@
         // 파일 업로드 이벤트 처리
         uploadButton.addEventListener('click', function () {
             const file = fileInput.files[0];
-            const group = document.getElementById('fileGroup').value;
+            const type = document.getElementById('fileGroup').value;
 
             if (!file) {
                 alert('파일을 선택해주세요.');
                 return;
             }
 
+            if (!type) {
+                alert('타입을 선택해주세요.');
+                return;
+            }
+
             const formData = new FormData();
             formData.append('file', file);
-            formData.append('group', group);
+            formData.append('type', type);
 
             fetch('http://0.0.0.0:8000/upload', {
                 method: 'POST',
