@@ -21,12 +21,13 @@ public class SqlDeckController {
     private final SqlDeckService sqlDeckService;
 
     @PostMapping("/api/sqldeck/execute")
-    public ResponseEntity<CommonResponse> executeSqlDeck(@RequestBody SqlDeckRequest sqlQuery) {
+    public ResponseEntity<CommonResponse> executeSqlDeck(@RequestBody SqlDeckRequest request) {
         try {
-            List<Map<String, Object>> result = sqlDeckService.executeNativeQuery(sqlQuery.getSqlQuery());
+            log.info("execute query is >>> {}",request.getSqlQuery());
+            List<Map<String, Object>> result = sqlDeckService.executeNativeQuery(request.getSqlQuery());
             return ResponseEntity.ok(CommonResponse.ok(result));
         } catch (PersistenceException e) {
-            return ResponseEntity.badRequest().body(CommonResponse.ok("Error processing the SQL query: " + sqlQuery.getSqlQuery()));
+            return ResponseEntity.badRequest().body(CommonResponse.ok("Error processing the SQL query: " + request.getSqlQuery()));
         }
     }
 

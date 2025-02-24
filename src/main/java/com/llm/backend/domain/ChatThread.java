@@ -3,7 +3,6 @@ package com.llm.backend.domain;
 import com.llm.backend.dto.ChatDto.ChatSaveRequest;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,7 +30,7 @@ public class ChatThread extends BaseTimeEntity{
     @ToString.Exclude // Lombok 순환 참조 방지
     private List<ChatLog> chatLogs;
 
-    public void addDialogue(ChatLog chatLog) {
+    public void addChatLog(ChatLog chatLog) {
         chatLog.setChatThread(this);
         if (this.chatLogs == null) {
             this.chatLogs = new ArrayList<>();
@@ -41,12 +40,12 @@ public class ChatThread extends BaseTimeEntity{
 
     public static ChatThread toEntity(ChatSaveRequest request) {
         ChatThread chatThread = ChatThread.builder()
-            .id(UUID.randomUUID().toString())
+            .id(request.getChatThreadId())
             .name(request.getChatThreadName())
             .chatLogs(new ArrayList<>())
             .build();
 
-        request.getChatLogs().forEach(dto -> chatThread.addDialogue(ChatLog.toEntity(dto)));
+//        request.getChatLogs().forEach(dto -> chatThread.addChatLog(ChatLog.toEntity(dto)));
 
         return chatThread;
     }

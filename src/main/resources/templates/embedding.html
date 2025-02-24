@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header">
+    <title>Hello</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="sb-nav-fixed">
+<div th:replace="fragments/bodyHeader :: bodyHeader"></div>
+<div id="layoutSidenav">
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <h1 class="mt-4">LLM 학습파일 업로드</h1>
+                <ol class="breadcrumb mb-4"></ol>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#fileUploadModal">
+                            파일 업로드
+                        </button>
+                    </div>
+                </div>
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-table me-1"></i>
+                        업로드된 파일 목록
+                    </div>
+                    <div class="card-body">
+                        <table id="datatablesSimple" class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>파일명</th>
+                                    <th>타입</th>
+                                    <th>파일크기(KB)</th>
+                                    <th>업로드 상태</th>
+                                    <th>업로드 일시</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="file : ${embeddingFiles}">
+                                    <td th:text="${file.fileName}"></td>
+                                    <td>
+                                        <span th:text="${file.fileType == 'document' ? '문서' : '조직도'}"></span>
+                                    </td>
+                                    <td th:text="${file.fileSize}"></td>
+                                    <td>
+                                        <span th:if="${file.uploadSuccess}" class="text-success">성공</span>
+                                        <span th:unless="${file.uploadSuccess}" class="text-danger" 
+                                              th:title="${file.errorMessage}">실패</span>
+                                    </td>
+                                    <td th:text="${#temporals.format(file.uploadDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <div th:replace="fragments/footer :: footer"></div>
+    </div>
+</div>
+
+<!-- File Upload Modal -->
+<div class="modal fade" id="fileUploadModal" tabindex="-1" aria-labelledby="fileUploadModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="fileUploadModalLabel">파일 업로드</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="fileUploadForm">
+                    <div class="mb-3">
+                        <label for="fileInput" class="form-label">PDF 파일 선택</label>
+                        <input type="file" id="fileInput" class="form-control" accept=".pdf" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="fileGroup" class="form-label">타입 선택</label>
+                        <select id="fileGroup" class="form-select">
+                            <option value="document">문서</option>
+                            <option value="department">조직도</option>
+                        </select>
+                    </div>
+                    <div id="fileDetails" class="mt-3"></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="uploadButton">저장</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Notification -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="uploadSuccessToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                파일 업로드가 성공적으로 완료되었습니다.
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const fileInput = document.getElementById('fileInput');
+        const fileDetails = document.getElementById('fileDetails');
+        const uploadButton = document.getElementById('uploadButton');
+        const fileUploadModal = document.getElementById('fileUploadModal');
+        const uploadSuccessToast = new bootstrap.Toast(document.getElementById('uploadSuccessToast'));
+
+        // 모달 인스턴스 초기화
+        let modalInstance = new bootstrap.Modal(fileUploadModal);
+
+        // 파일 선택 이벤트 처리
+        fileInput.addEventListener('change', function () {
+            const file = fileInput.files[0];
+            if (file) {
+                fileDetails.innerHTML = `
+                <p><strong>파일명:</strong> ${file.name}</p>
+                <p><strong>파일 크기:</strong> ${(file.size / 1024).toFixed(2)} KB</p>
+            `;
+            } else {
+                fileDetails.innerHTML = '';
+            }
+        });
+
+        // 파일 업로드 이벤트 처리
+        uploadButton.addEventListener('click', function () {
+            const file = fileInput.files[0];
+            const type = document.getElementById('fileGroup').value;
+
+            if (!file) {
+                alert('파일을 선택해주세요.');
+                return;
+            }
+
+            if (!type) {
+                alert('타입을 선택해주세요.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('type', type);
+
+            // FastAPI 서버로 먼저 요청
+            fetch('http://0.0.0.0:8000/upload', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => {
+                if (response.ok) {
+                    // FastAPI 업로드 성공 시 스프링 서버에 메타데이터만 전송
+                    const fileMetadata = {
+                        fileName: file.name,
+                        fileType: type,
+                        fileSize: Math.floor(file.size / 1024), // KB로 변환
+                        uploadSuccess: true,
+                        errorMessage: null
+                    };
+
+                    return fetch('/api/embedding/upload', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(fileMetadata),
+                    });
+                } else {
+                    throw new Error('FastAPI 서버 업로드 실패');
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 'SUCCESS') {
+                    uploadSuccessToast.show();
+                    modalInstance.hide();
+                    document.getElementById('fileUploadForm').reset();
+                    fileDetails.innerHTML = '';
+                    document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
+                    document.body.classList.remove('modal-open');
+                    
+                    // 페이지 새로고침
+                    window.location.reload();
+                } else {
+                    alert('파일 업로드에 실패했습니다: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('파일 업로드 중 오류 발생:', error);
+                
+                // 에러 발생 시에도 스프링 서버에 실패 기록
+                const fileMetadata = {
+                    fileName: file.name,
+                    fileType: type,
+                    fileSize: Math.floor(file.size / 1024),
+                    uploadSuccess: false,
+                    errorMessage: error.message
+                };
+
+                fetch('/api/embedding/upload', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(fileMetadata),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert('파일 업로드 중 오류가 발생했습니다.');
+                    // 실패 기록 후에도 페이지 새로고침
+                    window.location.reload();
+                })
+                .catch(error => {
+                    console.error('스프링 서버 기록 중 오류 발생:', error);
+                    window.location.reload();
+                });
+            });
+        });
+
+        // 모달 이벤트 정리
+        fileUploadModal.addEventListener('hidden.bs.modal', function () {
+            modalInstance = new bootstrap.Modal(fileUploadModal); // 새로운 인스턴스 초기화
+        });
+    });
+;
+</script>
+</body>
+</html>
